@@ -71,7 +71,7 @@ export class AppComponent {
   }
 
   onSelect(ans) {
-    if ( this.task.correctFound ) return;
+    if ( this.task.correctFound || this.timeLeft <= 0) return;
     
     let op = (this.task.operation == '*') ? 'm': 'd';
 
