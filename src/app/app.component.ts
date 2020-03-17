@@ -65,7 +65,14 @@ export class AppComponent {
     }
     this.hardness = getStorage('hardness');
 
-    this.task = question(this.histOfTrain, this.hardness);
+    let tempQuestion = question(this.histOfTrain, this.hardness);
+    let saved_question = getStorage('saved_question')
+    if (saved_question === null ){
+      setStorage('saved_question', tempQuestion)
+    } else {
+      tempQuestion = saved_question;
+    }
+    this.task = tempQuestion;
 
     
   }
@@ -100,6 +107,8 @@ export class AppComponent {
   nextQ() {
     this.timeLeft = timeToAnswer;
     this.task = question(this.histOfTrain, this.hardness);
+
+    setStorage('saved_question', this.task)
   }
 
 }
