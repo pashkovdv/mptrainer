@@ -1,4 +1,17 @@
 <div class='main'>
+
+  <h3>
+    {{stat.text}}
+  </h3>
+
+  <div
+    class='statButton'
+    *ngIf="stat.end"
+    (click)="statReset()"
+  >
+    запустить сотню
+  </div>
+
   <h1>
     {{task.x1}} {{task.operation}} {{task.x2}} = {{task.x3}}
   </h1>
@@ -9,7 +22,7 @@
       (click)="onSelect(item)"
       [class.greenButton]="task.correctFound && item == task.correctAnswer"
       [class.redButton]="task.answered.indexOf(item) >= 0"
-      [class.orangeButton]="timeLeft < 0 && item == task.correctAnswer && !task.correctFound"
+      [class.orangeButton]="task.timeEnd && item == task.correctAnswer && !task.correctFound"
     >
       {{item}}
     </li>
@@ -17,7 +30,7 @@
 
   <div
     class='nextButton'
-    *ngIf="task.correctFound || timeLeft < 0"
+    *ngIf="task.correctFound || task.timeEnd"
     (click)="nextQ()"
   >
     Следующий
@@ -25,12 +38,12 @@
 
   <div class="footer">
     <span>
-      0.19
+      0.23
     </span>
   </div>
 
   <div
-    *ngIf="!task.correctFound && timeLeft >= 0"
+    *ngIf="!task.correctFound && !task.timeEnd"
     class='bomb'
     [class.bsmall]="timeLeft % 2 == 1"
   >
@@ -38,7 +51,7 @@
   </div>
 
   <div
-    *ngIf="!task.correctFound && timeLeft < 0"
+    *ngIf="!task.correctFound && task.timeEnd"
     class='boom'
   >
     💥

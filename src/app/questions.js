@@ -176,7 +176,8 @@ export default function question(histOfTrain, hardness) {
     correctAnswer: 0,
     answers: [],
     answered: [],
-    correctFound: false
+    correctFound: false,
+    timeEnd: false
   }
 
   let task = randomInteger(0,2);

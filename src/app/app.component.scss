@@ -56,6 +56,14 @@ h1 {
   border: #42b983 solid 1px;
 }
 
+.statButton {
+  display: inline-block;
+  min-width: 200px;
+  padding: 10px;
+  margin: 0px;
+  border: #42b983 solid 1px;
+}
+
 .bomb {
   position: absolute;
 	left: 10px;

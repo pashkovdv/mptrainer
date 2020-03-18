@@ -35,7 +35,26 @@ export class AppComponent {
   source = timer(0, 1000);;
   subscribe = this.source.subscribe(val => {
     this.timeLeft--
+
+    if (this.timeLeft == 0) {
+      this.task.timeEnd = true;
+      setStorage('saved_question', this.task)
+      if (!this.task.correctFound && !this.stat.end){
+        this.stat.left++
+        this.stat.text = this.stat.left + " " + this.stat.correct + "/" + this.stat.all + " " + Math.round (100*this.stat.correct/this.stat.all) + "%";
+        setStorage('saved_stat', this.stat)
+      }
+    }
   });
+
+  stat: any = {
+    correct: 0,
+    all: 0,
+    left: 100,
+    end: true,
+    text: '0 0/0 0%'
+  };
+  
 
   ngOnInit() {
     
@@ -69,12 +88,28 @@ export class AppComponent {
     let saved_question = getStorage('saved_question')
     if (saved_question === null ){
       setStorage('saved_question', tempQuestion)
-    } else {
+    } else if ( !saved_question.timeEnd && !saved_question.correctFound) {
       tempQuestion = saved_question;
     }
     this.task = tempQuestion;
 
-    
+    let saved_stat = getStorage('saved_stat')
+    if (saved_stat === null ){
+      setStorage('saved_stat', this.stat)
+    } else {
+      this.stat = saved_stat;
+    }
+
+  }
+
+  statReset() {
+    this.stat.correct = 0,
+    this.stat.all = 0,
+    this.stat.left = 100;
+    this.stat.end = false,
+    this.stat.text = '100 0/0 0%'
+
+    this.timeLeft = timeToAnswer;
   }
 
   onSelect(ans) {
@@ -86,8 +121,16 @@ export class AppComponent {
     let j = this.task.i2 - 1;
 
     if ( ans == this.task.correctAnswer ){
+
       this.task.correctFound = true;
       if (this.task.answered.length == 0) {
+
+        if (!this.stat.end){
+          this.stat.correct++;
+          this.stat.all++;
+          this.stat.left--;
+        }
+
         this.histOfTrain[op][i][j]++;
         this.hardness[op]++;
 
@@ -96,12 +139,25 @@ export class AppComponent {
         }
       }
     } else {
+      if (!this.stat.end){
+        this.stat.all++;
+        this.stat.left++
+      };
       this.task.answered.push( ans );
       this.hardness[op] = Math.round (0.7 * this.hardness[op])
       this.histOfTrain[op][i][j] = Math.round (0.7 * this.histOfTrain[op][i][j]);
     }
+
+    this.stat.text = this.stat.left + " " + this.stat.correct + "/" + this.stat.all + " " + Math.round (100*this.stat.correct/this.stat.all) + "%";
+    if (this.stat.left <= 0){ 
+      this.stat.end = true;
+      setStorage('saved_stat', this.stat)
+    }
+
     setStorage('results_3', this.histOfTrain)
     setStorage('hardness', this.hardness)
+    if (!this.stat.end) setStorage('saved_stat', this.stat)
+    
   }
 
   nextQ() {
