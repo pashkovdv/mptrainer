@@ -1,4 +1,4 @@
-li {
+.liButton {
   list-style-type: none;
   display: inline-block;
   border: solid green 1px;
@@ -62,6 +62,10 @@ h1 {
   padding: 10px;
   margin: 0px;
   border: #42b983 solid 1px;
+}
+
+.statTextOn {
+  color: lightgray;
 }
 
 .bomb {
