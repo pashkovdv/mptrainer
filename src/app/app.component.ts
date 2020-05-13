@@ -17,12 +17,10 @@ function getStorage (n: string) {
 function makeStatText( stat: any ){
   let txt;
   txt = stat.left + " " + stat.correct + "/" + stat.all + " ";
-  txt += (stat.all > 0) ? Math.round (numberOfQuestions*stat.correct/stat.all) : "0";
+  txt += (stat.all > 0) ? Math.round (100*stat.correct/stat.all) : "0";
   txt += "%";
   return txt;
 }
-
-
 
 @Component({
   selector: 'app-root',
@@ -66,7 +64,6 @@ export class AppComponent {
     text: '0 0/0 0%'
   };
   
-
   ngOnInit() {
     
     if ( getStorage('results_3') === null ) {
@@ -168,7 +165,15 @@ export class AppComponent {
     this.stat.text = makeStatText(this.stat);
     if (this.stat.left <= 0){ 
       this.stat.end = true;
-      setStorage('saved_stat', this.stat)
+      setStorage('saved_stat', this.stat);
+
+      let histOf100 = getStorage('histOf100');
+      if ( histOf100 === null ){
+        setStorage('histOf100', [makeStatText(this.stat)] );
+      } else {
+        histOf100.push( makeStatText(this.stat) );
+        setStorage('histOf100',  histOf100 );
+      }
     }
 
     setStorage('results_3', this.histOfTrain)
