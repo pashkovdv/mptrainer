@@ -4,7 +4,6 @@ import { timer } from 'rxjs';
 import question from './questions.js'
 
 const timeToAnswer = 10;
-const numberOfQuestions = 100;
 
 function setStorage (n: string, o: object) {
   localStorage.setItem(n, JSON.stringify(o) )
@@ -29,6 +28,7 @@ function makeStatText( stat: any ){
 })
 export class AppComponent {
   title = 'mp-trainer';
+  numberOfQuestions = 100;
 
   histOfTrain: any = {
     m: [],
@@ -59,7 +59,7 @@ export class AppComponent {
   stat: any = {
     correct: 0,
     all: 0,
-    left: numberOfQuestions,
+    left: this.numberOfQuestions,
     end: true,
     text: '0 0/0 0%'
   };
@@ -116,12 +116,13 @@ export class AppComponent {
 
   }
 
-  statReset() {
+  statReset(numberOfQuestions) {
+    this.numberOfQuestions = numberOfQuestions;
     this.stat.correct = 0,
     this.stat.all = 0,
-    this.stat.left = numberOfQuestions;
+    this.stat.left = this.numberOfQuestions;
     this.stat.end = false,
-    this.stat.text = numberOfQuestions + ' 0/0 0%'
+    this.stat.text = this.numberOfQuestions + ' 0/0 0%'
 
     this.timeLeft = timeToAnswer;
   }

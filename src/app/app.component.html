@@ -8,9 +8,25 @@
   <div
     class='statButton'
     *ngIf="stat.end"
-    (click)="statReset()"
+    (click)="statReset(100)"
   >
-    запустить сотню
+    запустить 100
+  </div>
+
+  <div
+    class='statButton'
+    *ngIf="stat.end"
+    (click)="statReset(50)"
+  >
+    запустить 50
+  </div>
+
+  <div
+    class='statButton'
+    *ngIf="stat.end"
+    (click)="statReset(25)"
+  >
+    запустить 25
   </div>
 
   <h1>
@@ -49,7 +65,7 @@
 
   <div class="footer">
     <span>
-      0.26
+      0.27
     </span>
   </div>
 
