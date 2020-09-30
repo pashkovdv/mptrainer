@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { timer } from 'rxjs';
+import packageJson from "../../package.json";
 
 import question from './questions.js'
 
@@ -44,6 +45,7 @@ function makeStatOb( stat: any ){
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  version = packageJson.version
   title = 'mp-trainer';
   numberOfQuestions = 0;
   histOfTrain: any = {

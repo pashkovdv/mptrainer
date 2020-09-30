@@ -1,11 +1,11 @@
 {
   "name": "mp-trainer",
-  "version": "0.0.0",
+  "version": "0.1.5",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
     "pbuild": "ng build --prod --base-href=/mp/",
+    "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
