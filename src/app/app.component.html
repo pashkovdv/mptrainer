@@ -58,11 +58,13 @@
           class='gridItem'
           *ngFor="let item of task.answers"
           (click)="onSelect(item)"
-          [class.greenButton]="task.correctFound && item == task.correctAnswer"
-          [class.redButton]="task.answered.indexOf(item) >= 0"
-          [class.orangeButton]="task.timeEnd && item == task.correctAnswer && !task.correctFound"
         >
-          <div class='liButton'>{{item}}</div>
+          <div
+            class='liButton'
+            [class.greenButton]="task.correctFound && item == task.correctAnswer"
+            [class.redButton]="task.answered.indexOf(item) >= 0"
+            [class.orangeButton]="task.timeEnd && item == task.correctAnswer && !task.correctFound"
+          >&nbsp;{{item}}&nbsp;</div>
         </div>
       </div>
     </div>
@@ -102,7 +104,7 @@
 
   <div class="footer">
     <span>
-      0.31
+      0.33
     </span>
   </div>
 
