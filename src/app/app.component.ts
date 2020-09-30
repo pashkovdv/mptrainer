@@ -3,7 +3,7 @@ import { timer } from 'rxjs';
 
 import question from './questions.js'
 
-const timeToAnswer = 10;
+const timeToAnswer = 20;
 
 function setStorage (n: string, o: object) {
   localStorage.setItem(n, JSON.stringify(o) )
@@ -21,6 +21,23 @@ function makeStatText( stat: any ){
   return txt;
 }
 
+function makeStatOb( stat: any ){
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  const yyyy = today.getFullYear();
+  const strDay = `${dd}-${mm}-${yyyy}`;
+  const percent = stat.all > 0 ? Math.round (100*stat.correct/stat.all) : "0";
+  const ob = {
+    strDay,
+    left: stat.left,
+    correct: stat.correct,
+    all: stat.all,
+    percent
+  };
+  return ob;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -28,8 +45,7 @@ function makeStatText( stat: any ){
 })
 export class AppComponent {
   title = 'mp-trainer';
-  numberOfQuestions = 100;
-
+  numberOfQuestions = 0;
   histOfTrain: any = {
     m: [],
     d: [],
@@ -39,10 +55,12 @@ export class AppComponent {
     m: 0,
     d: 0,
   };
+  histOf100: any[];
 
   timeLeft = timeToAnswer;
   source = timer(0, 1000);;
   subscribe = this.source.subscribe(val => {
+    if (this.stat.end) return;
     this.timeLeft--
 
     if (this.timeLeft == 0) {
@@ -65,44 +83,33 @@ export class AppComponent {
   };
   
   ngOnInit() {
-    
+    // инициализируем таблицу сложностей для операндов умножения
     if ( getStorage('results_3') === null ) {
-      
       let arr = [];
       for (let i=0; i<12; i++){
-        arr.push(new Array());
+        arr.push([]);
         for (let j=0; j<12; j++) arr[i].push(0)
       }
-
-      let arr2 = arr.slice();
-
-      if ( getStorage('results_2') !== null ) {
-        arr = getStorage('results_2');
-        localStorage.removeItem('results_2');
-      }
-      setStorage('results_3', {m:arr, d:arr2})
-    }
+      setStorage('results_3', {m:arr, d:arr})
+    };
     this.histOfTrain = getStorage('results_3')
 
-    let h = getStorage('hardness')
-    if (h === null ){
-      setStorage('hardness', this.hardness )
-    } else if (typeof h == 'number') {
-      setStorage('hardness', {m:h, d:0})
-    }
+    // иницаилизируем общую сложность
+    if (getStorage('hardness') === null ) setStorage('hardness', this.hardness );
     this.hardness = getStorage('hardness');
 
+    // инициализируем текущие вопрос
     let tempQuestion = question(this.histOfTrain, this.hardness);
     let saved_question = getStorage('saved_question')
     if (saved_question === null ){
       setStorage('saved_question', tempQuestion)
     } else if ( !saved_question.timeEnd && !saved_question.correctFound) {
       tempQuestion = saved_question;
-    }
+    };
     this.task = tempQuestion;
 
+    // поднимем записанную статистику сессии
     let saved_stat = getStorage('saved_stat')
-    
     if (saved_stat === null ){
       setStorage('saved_stat', this.stat)
     } else {
@@ -112,8 +119,23 @@ export class AppComponent {
         setStorage('saved_stat', saved_stat)
       }
       this.stat = saved_stat;
-    }
+    };
 
+    // поднимем историю тренировок
+    this.histOf100 = getStorage('histOf100') || [];
+    this.histOf100 = this.histOf100.map( item => { // раньше данные хранились в строке вида "0 3/3 100%", пересоберем такие данные в объект
+      if ( typeof item === 'string') {
+        let arr = item.split(' ');
+        return {
+          strDay: "",
+          left: arr[0],
+          correct: arr[1].split('/')[0],
+          all: arr[1].split('/')[1],
+          percent: arr[2].split('%')[0],
+        };
+      };
+      return item;
+    });
   }
 
   statReset(numberOfQuestions) {
@@ -159,22 +181,16 @@ export class AppComponent {
         this.stat.left++
       };
       this.task.answered.push( ans );
-      this.hardness[op] = Math.round (0.7 * this.hardness[op])
-      this.histOfTrain[op][i][j] = Math.round (0.7 * this.histOfTrain[op][i][j]);
+      this.hardness[op] = Math.round (0.8 * this.hardness[op])
+      this.histOfTrain[op][i][j] = Math.round (0.8 * this.histOfTrain[op][i][j]);
     }
 
     this.stat.text = makeStatText(this.stat);
     if (this.stat.left <= 0){ 
       this.stat.end = true;
       setStorage('saved_stat', this.stat);
-
-      let histOf100 = getStorage('histOf100');
-      if ( histOf100 === null ){
-        setStorage('histOf100', [makeStatText(this.stat)] );
-      } else {
-        histOf100.push( makeStatText(this.stat) );
-        setStorage('histOf100',  histOf100 );
-      }
+      this.histOf100.unshift(  makeStatOb(this.stat) );
+      setStorage('histOf100',  this.histOf100 );
     }
 
     setStorage('results_3', this.histOfTrain)

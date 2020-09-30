@@ -33,31 +33,45 @@ function nextN(histOfTrain, hardness) {
 }
 
 function addRandomMult(forReturn) {
-  
+  const addNeightbour = (n) => { // добавляем вариант ответа для рядом стоящих операндов
+    const toLength = answers.length + n;
+    while (answers.length < toLength) {
+      let dx1 = randomInteger(-1,1);
+      let dx2 = randomInteger(-1,1);
+      ans = (forReturn.i1 + dx1) * (forReturn.i2 + dx2);
+      if (ans > 0 && answers.indexOf(ans) < 0 ) answers.push(ans);
+    };
+  };
+
+  const addCurrentDec = (n) => { // добавляем случаный вариант ответа из текущего десятка
+    const toLength = answers.length + n;
+    while (answers.length < toLength) {
+      ans = answers[0];
+      ans = 10*Math.floor(ans/10);
+      ans += randomInteger(0,9);
+      if (ans > 0 && answers.indexOf(ans) < 0 ) answers.push(ans);
+    };
+  };
+
+  const addRangeDec = (n) => { // добавляем случайный вариант из диапазона +-10
+    const toLength = answers.length + n;
+    while (answers.length < toLength) {
+      ans = answers[0];
+      ans = randomInteger(ans-10, ans+10);
+      if (ans > 0 && answers.indexOf(ans) < 0 ) answers.push(ans);
+    };
+  };
+
   let answers = forReturn.answers;
   answers.push(forReturn.correctAnswer);
   
   let ans = 0;
 
-  while (answers.length == 1) {
-    let dx1 = randomInteger(-1,1)
-    let dx2 = randomInteger(-1,1)
-    ans = (forReturn.i1 + dx1) * (forReturn.i2 + dx2);
-    if (ans > 0 && answers.indexOf(ans) < 0 ) answers.push(ans)
-  }
+  addNeightbour(2);
+  addCurrentDec(1);
+  addRangeDec(2);
 
-  while (answers.length == 2) {
-    ans = answers[0]
-    ans = 10*Math.floor(ans/10)
-    ans += randomInteger(0,9)
-    if (ans > 0 && answers.indexOf(ans) < 0 ) answers.push(ans)
-  }
-
-  while (answers.length == 3) {
-    ans = answers[0]
-    ans = randomInteger(ans-10, ans+10)
-    if (ans > 0 && answers.indexOf(ans) < 0 ) answers.push(ans)
-  }
+  
 }
 
 function addRandomX(forReturn) {
@@ -66,9 +80,9 @@ function addRandomX(forReturn) {
   answers.push(forReturn.correctAnswer);
   
   let ans = 0;
-  while (answers.length < 4) {
+  while (answers.length < 6) {
     ans = answers[0]
-    ans = randomInteger(ans-4, ans+4)
+    ans = randomInteger(ans-5, ans+5)
     if (ans > 0 && answers.indexOf(ans) < 0 ) answers.push(ans)
   }
 

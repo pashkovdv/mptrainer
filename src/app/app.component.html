@@ -6,82 +6,111 @@
   </h3>
 
   <div
-    class='statButton'
+    class ='startContainer'
     *ngIf="stat.end"
-    (click)="statReset(100)"
   >
-    запустить 100
-  </div>
-
-  <div
-    class='statButton'
-    *ngIf="stat.end"
-    (click)="statReset(50)"
-  >
-    запустить 50
-  </div>
-
-  <div
-    class='statButton'
-    *ngIf="stat.end"
-    (click)="statReset(25)"
-  >
-    запустить 25
-  </div>
-
-  <h1>
-    {{task.x1}} {{task.operation}} {{task.x2}} = {{task.x3}}
-  </h1>
-
-  <ul>
-    <li
-      class='liButton'
-      *ngFor="let item of task.answers"
-      (click)="onSelect(item)"
-      [class.greenButton]="task.correctFound && item == task.correctAnswer"
-      [class.redButton]="task.answered.indexOf(item) >= 0"
-      [class.orangeButton]="task.timeEnd && item == task.correctAnswer && !task.correctFound"
+      <div
+      class='startButton'
+      (click)="statReset(2)"
     >
-      {{item}}
-    </li>
-  </ul>
+      запустить 2
+    </div>
 
-  <div
-    class='nextButton'
-    *ngIf="task.correctFound || task.timeEnd"
-    (click)="nextQ()"
-  >
-    Следующий
-  </div>
-
-
-  <ul *ngIf='false'>
-    <li
-      *ngFor="let item of paramlog()"
+    <div
+      class='startButton'
+      (click)="statReset(25)"
     >
-      {{item}}
-    </li>
-  </ul>
+      запустить 25
+    </div>
 
-  <div class="footer">
-    <span>
-      0.27
-    </span>
+    <div
+      class='startButton'
+      (click)="statReset(50)"
+    >
+      запустить 50
+    </div>
+
+    <div
+      class='startButton'
+      (click)="statReset(100)"
+    >
+      запустить 100
+    </div>
+
+    <table class='statTable'>
+      <thead>
+        <th>Дата</th>
+        <th>Задач</th>
+        <th>Правильно</th>
+      </thead>
+      <tr *ngFor="let item of histOf100" >
+        <td>{{item.strDay}}</td>
+        <td>{{item.all}}</td>
+        <td>{{item.percent + '%'}}</td>
+      </tr>
+    </table>
+
   </div>
 
   <div
-    *ngIf="!task.correctFound && !task.timeEnd"
-    class='bomb'
-    [class.bsmall]="timeLeft % 2 == 1"
+    *ngIf="!stat.end"
   >
-    💣
-  </div>
+    <h1>
+      {{task.x1}} {{task.operation}} {{task.x2}} = {{task.x3}}
+    </h1>
 
-  <div
-    *ngIf="!task.correctFound && task.timeEnd"
-    class='boom'
-  >
-    💥
+    <div class ='buttonContainer'>
+      <div class ='gridContainer'>
+        <div
+          class='gridItem'
+          *ngFor="let item of task.answers"
+          (click)="onSelect(item)"
+          [class.greenButton]="task.correctFound && item == task.correctAnswer"
+          [class.redButton]="task.answered.indexOf(item) >= 0"
+          [class.orangeButton]="task.timeEnd && item == task.correctAnswer && !task.correctFound"
+        >
+          <div class='liButton'>{{item}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class='nextButton'
+      *ngIf="task.correctFound || task.timeEnd"
+      (click)="nextQ()"
+    >
+      Следующий
+    </div>
+
+
+    <ul *ngIf='false'>
+      <li
+        *ngFor="let item of paramlog()"
+      >
+        {{item}}
+      </li>
+    </ul>
+
+    <div class="footer">
+      <span>
+        0.28
+      </span>
+    </div>
+
+    <div
+      *ngIf="!task.correctFound && !task.timeEnd"
+      class='bomb'
+      [class.bsmall]="timeLeft % 2 == 1"
+    >
+      💣
+    </div>
+
+    <div
+      *ngIf="!task.correctFound && task.timeEnd"
+      class='boom'
+    >
+      💥
+    </div>
   </div>
 
 </div>
