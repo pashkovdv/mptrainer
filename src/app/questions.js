@@ -68,8 +68,8 @@ function addRandomMult(forReturn) {
   let ans = 0;
 
   addNeightbour(2);
-  addCurrentDec(1);
-  addRangeDec(2);
+  addCurrentDec(2);
+  addRangeDec(1);
 
   
 }
@@ -93,7 +93,7 @@ function mult0(forReturn) {
   forReturn.x1 = forReturn.i1;
   forReturn.operation = '*';
   forReturn.x2 = forReturn.i2;
-  forReturn.x3 = "?";
+  forReturn.x3 = forReturn.questionSign;
   forReturn.correctAnswer = forReturn.i1 * forReturn.i2;
 
   addRandomMult(forReturn)
@@ -105,7 +105,7 @@ function mult1(forReturn) {
 
   forReturn.x1 = forReturn.i1;
   forReturn.operation = '*';
-  forReturn.x2 = "?";
+  forReturn.x2 = forReturn.questionSign;
   forReturn.x3 = forReturn.i1 * forReturn.i2;
   forReturn.correctAnswer = forReturn.i2;
 
@@ -116,7 +116,7 @@ function mult1(forReturn) {
 
 function mult2(forReturn) {
 
-  forReturn.x1 = "?";
+  forReturn.x1 = forReturn.questionSign;
   forReturn.operation = '*';
   forReturn.x2 = forReturn.i2;
   forReturn.x3 = forReturn.i1 * forReturn.i2;
@@ -132,7 +132,7 @@ function dev0(forReturn) {
   forReturn.x1 = forReturn.i1 * forReturn.i2;
   forReturn.operation = '/';
   forReturn.x2 = forReturn.i1;
-  forReturn.x3 = "?";
+  forReturn.x3 = forReturn.questionSign;
   forReturn.correctAnswer = forReturn.i2;
 
   addRandomX(forReturn)
@@ -144,7 +144,7 @@ function dev1(forReturn) {
   
   forReturn.x1 = forReturn.i1 * forReturn.i2;
   forReturn.operation = '/';
-  forReturn.x2 = "?";
+  forReturn.x2 = forReturn.questionSign;
   forReturn.x3 = forReturn.i2;
   forReturn.correctAnswer = forReturn.i1;
 
@@ -155,7 +155,7 @@ function dev1(forReturn) {
 
 function dev2(forReturn) {
   
-  forReturn.x1 = "?";
+  forReturn.x1 = forReturn.questionSign;
   forReturn.operation = '/';
   forReturn.x2 = forReturn.i1;
   forReturn.x3 = forReturn.i2;
@@ -166,15 +166,32 @@ function dev2(forReturn) {
   return forReturn;
 }
 
+function getQuestionMark(hardnes){
+  let chance = Math.floor(hardnes/10);
+  chance = Math.max(25-chance, 5)
+  console.log("getQuestionMark -> chance1", chance);
+  chance = randomInteger(0, chance)
+  console.log("getQuestionMark -> chance2", chance)
+  if ( chance > 0 ) {
+    return '?';
+  };
+
+  let ABCXYZ = 'ABCXYZ';
+  return ABCXYZ[ randomInteger(0, ABCXYZ.length-1) ];
+
+}
+
 export default function question(histOfTrain, hardness) {
-  
   let operation;
   let n;
+  let hardnes;
 
   if ( randomInteger(0, hardness.m + hardness.d) <= hardness.d ) {
+    hardnes = hardness.m;
     n = nextN(histOfTrain.m, hardness.m);
     operation = '*';
   } else {
+    hardnes = hardness.d;
     n = nextN(histOfTrain.d, hardness.d);
     operation = '/';
   }
@@ -191,7 +208,8 @@ export default function question(histOfTrain, hardness) {
     answers: [],
     answered: [],
     correctFound: false,
-    timeEnd: false
+    timeEnd: false,
+    questionSign: getQuestionMark(hardnes),
   }
 
   let task = randomInteger(0,2);

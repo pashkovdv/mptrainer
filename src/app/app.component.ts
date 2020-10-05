@@ -45,6 +45,7 @@ function makeStatOb( stat: any ){
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  showForParents = false;
   version = packageJson.version
   title = 'mp-trainer';
   numberOfQuestions = 0;
@@ -138,6 +139,10 @@ export class AppComponent {
       };
       return item;
     });
+  }
+
+  forParentsToggle() {
+    this.showForParents = !this.showForParents;
   }
 
   statReset(numberOfQuestions) {
