@@ -91,8 +91,15 @@ h1 {
   border: #4246b9 solid 1px;
 }
 
+.forParentsButtonCenter{
+  text-align: center;
+  display: grid;
+  justify-content: right;
+  margin-bottom: 15px;
+}
+
 .forParentsText{
-  width: 600px;
+  max-width: 600px;
   text-align: left;
 }
 
