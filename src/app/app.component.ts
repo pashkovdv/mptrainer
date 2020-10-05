@@ -7,12 +7,12 @@ import question from './questions.js'
 const timeToAnswer = 20;
 
 function setStorage (n: string, o: object) {
-  localStorage.setItem(n, JSON.stringify(o) )
-}
+  localStorage.setItem(n, JSON.stringify(o) );
+};
 
 function getStorage (n: string) {
   return JSON.parse( localStorage.getItem(n) );
-}
+};
 
 function makeStatText( stat: any ){
   let txt;
@@ -20,7 +20,7 @@ function makeStatText( stat: any ){
   txt += (stat.all > 0) ? Math.round (100*stat.correct/stat.all) : "0";
   txt += "%";
   return txt;
-}
+};
 
 function makeStatOb( stat: any ){
   const today = new Date();
@@ -34,10 +34,10 @@ function makeStatOb( stat: any ){
     left: stat.left,
     correct: stat.correct,
     all: stat.all,
-    percent
+    percent,
   };
   return ob;
-}
+};
 
 @Component({
   selector: 'app-root',
@@ -46,7 +46,7 @@ function makeStatOb( stat: any ){
 })
 export class AppComponent {
   showForParents = false;
-  version = packageJson.version
+  version = packageJson.version;
   title = 'mp-trainer';
   numberOfQuestions = 0;
   histOfTrain: any = {
@@ -64,17 +64,17 @@ export class AppComponent {
   source = timer(0, 1000);;
   subscribe = this.source.subscribe(val => {
     if (this.stat.end) return;
-    this.timeLeft--
+    this.timeLeft--;
 
     if (this.timeLeft == 0) {
       this.task.timeEnd = true;
-      setStorage('saved_question', this.task)
+      setStorage('saved_question', this.task);
       if (!this.task.correctFound && !this.stat.end){
-        this.stat.left++
+        this.stat.left++;
         this.stat.text = makeStatText(this.stat);
-        setStorage('saved_stat', this.stat)
-      }
-    }
+        setStorage('saved_stat', this.stat);
+      };
+    };
   });
 
   stat: any = {
@@ -91,11 +91,11 @@ export class AppComponent {
       let arr = [];
       for (let i=0; i<12; i++){
         arr.push([]);
-        for (let j=0; j<12; j++) arr[i].push(0)
-      }
-      setStorage('results_3', {m:arr, d:arr})
+        for (let j=0; j<12; j++) arr[i].push(0);
+      };
+      setStorage('results_3', {m:arr, d:arr});
     };
-    this.histOfTrain = getStorage('results_3')
+    this.histOfTrain = getStorage('results_3');
 
     // иницаилизируем общую сложность
     if (getStorage('hardness') === null ) setStorage('hardness', this.hardness );
@@ -103,9 +103,9 @@ export class AppComponent {
 
     // инициализируем текущие вопрос
     let tempQuestion = question(this.histOfTrain, this.hardness);
-    let saved_question = getStorage('saved_question')
+    let saved_question = getStorage('saved_question');
     if (saved_question === null ){
-      setStorage('saved_question', tempQuestion)
+      setStorage('saved_question', tempQuestion);
     } else if ( !saved_question.timeEnd && !saved_question.correctFound) {
       tempQuestion = saved_question;
     };
@@ -114,13 +114,13 @@ export class AppComponent {
     // поднимем записанную статистику сессии
     let saved_stat = getStorage('saved_stat')
     if (saved_stat === null ){
-      setStorage('saved_stat', this.stat)
+      setStorage('saved_stat', this.stat);
     } else {
       if ( !saved_stat.end ) {
         saved_stat.left = saved_stat.left + 1;
         saved_stat.text = makeStatText(saved_stat);
-        setStorage('saved_stat', saved_stat)
-      }
+        setStorage('saved_stat', saved_stat);
+      };
       this.stat = saved_stat;
     };
 
@@ -173,14 +173,14 @@ export class AppComponent {
           this.stat.correct++;
           this.stat.all++;
           this.stat.left--;
-        }
+        };
 
         this.histOfTrain[op][i][j]++;
         this.hardness[op]++;
 
         if (this.timeLeft > timeToAnswer/3) {
           this.histOfTrain[op][i][j]++;
-        }
+        };
       }
     } else {
       if (!this.stat.end){
@@ -188,7 +188,7 @@ export class AppComponent {
         this.stat.left++
       };
       this.task.answered.push( ans );
-      this.hardness[op] = Math.round (0.8 * this.hardness[op])
+      this.hardness[op] = Math.round (0.8 * this.hardness[op]);
       this.histOfTrain[op][i][j] = Math.round (0.8 * this.histOfTrain[op][i][j]);
     }
 
@@ -200,27 +200,26 @@ export class AppComponent {
       setStorage('histOf100',  this.histOf100 );
     }
 
-    setStorage('results_3', this.histOfTrain)
-    setStorage('hardness', this.hardness)
-    if (!this.stat.end) setStorage('saved_stat', this.stat)
-    
+    setStorage('results_3', this.histOfTrain);
+    setStorage('hardness', this.hardness);
+    if (!this.stat.end) setStorage('saved_stat', this.stat);
   }
 
   nextQ() {
     this.timeLeft = timeToAnswer;
     this.task = question(this.histOfTrain, this.hardness);
 
-    setStorage('saved_question', this.task)
+    setStorage('saved_question', this.task);
   }
 
   paramlog() {
     let at = [];
-    at.push("--------------task---------------")
-    for (let v in this.task) at.push(v + " = " + this.task[v])
-    at.push("--------------stat---------------")
-    for (let v in this.stat) at.push(v + " = " + this.stat[v])
-    at.push("--------------timeLeft---------------")
-    at.push("timeLeft = " + this.timeLeft)
+    at.push("--------------task---------------");
+    for (let v in this.task) at.push(v + " = " + this.task[v]);
+    at.push("--------------stat---------------");
+    for (let v in this.stat) at.push(v + " = " + this.stat[v]);
+    at.push("--------------timeLeft---------------");
+    at.push("timeLeft = " + this.timeLeft);
     return at;
   }
 
